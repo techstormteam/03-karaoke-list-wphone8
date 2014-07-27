@@ -1,0 +1,11 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="KaraokeList" EntryPointType="KaraokeList.App" RuntimeVersion="4.7.50308.0">
+  <Deployment.Parts>
+    <AssemblyPart x:Name="KaraokeList" Source="KaraokeList.dll" />
+    <AssemblyPart x:Name="Microsoft.Phone.Controls" Source="Microsoft.Phone.Controls.dll" />
+    <AssemblyPart x:Name="Microsoft.Phone.Controls.Toolkit" Source="Microsoft.Phone.Controls.Toolkit.dll" />
+    <AssemblyPart Source="fr/KaraokeList.resources.dll" />
+    <AssemblyPart Source="vi-VN/KaraokeList.resources.dll" />
+    <AssemblyPart Source="vi/KaraokeList.resources.dll" />
+    <AssemblyPart Source="vi-VN/Microsoft.Phone.Controls.Toolkit.resources.dll" />
+  </Deployment.Parts>
+</Deployment>
