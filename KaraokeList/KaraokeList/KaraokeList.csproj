@@ -107,11 +107,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Speech.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="ViewModels\ViewModelFavorite.cs" />
     <Compile Include="ViewModels\ViewModelSong.cs" />
-    <Compile Include="Views\PageFavorite.xaml.cs">
-      <DependentUpon>PageFavorite.xaml</DependentUpon>
+    <Compile Include="Views\PageSongDetail.xaml.cs">
+      <DependentUpon>PageSongDetail.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PageSongSearch.xaml.cs">
       <DependentUpon>PageSongSearch.xaml</DependentUpon>
@@ -126,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PageFavorite.xaml">
+    <Page Include="Views\PageSongDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -136,8 +138,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database\KaraokeList.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Database\KaraokeListDB.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
@@ -209,6 +211,9 @@
     <EmbeddedResource Include="Resources\AppResources.vi.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Coding4Fun.Toolkit.Controls">
+      <HintPath>..\packages\Coding4Fun.Toolkit.Controls.2.0.7\lib\windowsphone8\Coding4Fun.Toolkit.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>

@@ -12,6 +12,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
+    Loaded="Page_Loaded"
     shell:SystemTray.IsVisible="False"
 	shell:SystemTray.BackgroundColor="Black"
     shell:SystemTray.ForegroundColor="#ffa200"
@@ -31,13 +32,13 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="Assets/Images/app.icon.jpg" />
+                <Image Grid.Column="0" Source="/Assets/Images/app.icon.jpg" />
                 <TextBlock Grid.Column="1" TextBlock.Foreground="#ffa200" Margin="10,0,0,0" Text="KARAOKE LIST" FontSize="30" />
             </Grid>
         </Grid>
         
         <!--TitlePanel contains the name of the application and page title-->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Background="#1f1f1f">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="auto"/>
@@ -57,23 +58,21 @@
         </Grid>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="2" Margin="12,0,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="2" Background="#1f1f1f">
 
-            <phone:LongListSelector x:Name="llsWordList"
-                                IsGroupingEnabled="true" HideEmptyGroups ="true" LayoutMode="List"
-                                ItemsSource="{Binding EntriesGroup}" Height="633" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
+            <phone:LongListSelector x:Name="llsWordList" HideEmptyGroups ="true" LayoutMode="List"
+                                ItemsSource="{Binding EntriesData}" Height="633" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer x:Name="ImgScrollViewer" ScrollViewer.HorizontalScrollBarVisibility="Hidden"  VerticalScrollBarVisibility="Disabled" VerticalAlignment="Bottom">
-                            <StackPanel Margin="0,-6,0,12" Opacity="1" Height="80">
-                                <StackPanel>
-                                    <TextBlock x:Name="lblSongId" Text="{Binding songId}" Padding="0,28,0,0" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle2Style}"/>
-                                    <TextBlock x:Name="lblSongName" Text="{Binding name}" Padding="0,28,0,0" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextTitle2Style}"/>
+                        
+                            <StackPanel Background="Black" Height="80">
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <TextBlock x:Name="lblSongId" Text="{Binding SongId}" HorizontalAlignment="Left" Width="100" Style="{StaticResource PhoneTextTitle3Style}"/>
+                                    <TextBlock x:Name="lblSongName" Text="{Binding Name}" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle3Style}"/>
                                 </StackPanel>
-                                <TextBlock x:Name="lblLyric" Text="{Binding lyric}" Padding="0,28,0,0" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextTitle2Style}"/>
-                                <!--<Rectangle Height="2" Fill="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
+                                <TextBlock Grid.Row="1" x:Name="lblLyric" Text="{Binding Lyric}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSmallStyle}"/>
+                                <Rectangle Height="5" Fill="#1f1f1f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </StackPanel>
-                        </ScrollViewer>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
@@ -81,7 +80,8 @@
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True"
+                              ForegroundColor="#ffa200" BackgroundColor="Black">
             <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationBar/appbar.search.png" Text="tìm kiếm"
                                             Click="btnSearch_Click"/>
             <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationBar/appbar.microphone.png" Text="nói và tìm"

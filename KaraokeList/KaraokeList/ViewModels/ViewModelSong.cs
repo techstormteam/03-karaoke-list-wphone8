@@ -21,6 +21,8 @@ namespace KaraokeList.ViewModels
         private int nextIndex = 0;
         private ObservableCollection<ModelSong> entries;
         private ObservableCollection<AlphaKeyGroup<ModelSong>> entriesGroup;
+        private ModelSong selectedEntry;
+        private SpeechRecognizer recognizer = getRecognizer();
 
         private bool dataLoaded = false;
 
@@ -32,20 +34,21 @@ namespace KaraokeList.ViewModels
         {
             if (!dataLoaded)
             {
-                IEnumerable<ModelSong> list = ModelSong.QuerySongByVol(App.DbConnectionProperty, 1, "en");
+                IEnumerable<ModelSong> list = ModelSong.QuerySongByVol(App.DbConnectionProperty, 48, "vn");
                 entries = new ObservableCollection<ModelSong>(list);
 
-                //ModelSong song = new ModelSong();
+                //ModelSong song;
                 //entries = new ObservableCollection<ModelSong>();
+                //song = new ModelSong();
                 //song.SongId = 111111;
                 //song.Name = "Tinh ta lo xa";
-                //song.Lyric = "";
+                //song.Lyric = "dpsgoisdnoibnrpojbiwehiobwepb[pwepobhweiohbw";
                 //entries.Add(song);
 
-                //entries = new ObservableCollection<ModelSong>();
-                //song.SongId = 111111;
+                //song = new ModelSong();
+                //song.SongId = 222222;
                 //song.Name = "Tinh ta lo xa";
-                //song.Lyric = "";
+                //song.Lyric = "dpsgoisdnoibnrpojbiwehiobwepb[pwepobhweiohbw";
                 //entries.Add(song);
 
                 EntriesGroup = CreateGroup(0, entries.Count - 1);
@@ -82,6 +85,35 @@ namespace KaraokeList.ViewModels
             get { return dataLoaded; }
         }
 
+        public ObservableCollection<ModelSong> EntriesData
+        {
+            get { return entries; }
+            set
+            {
+                NotifyPropertyChanging("EntriesData");
+                entries = value;
+                NotifyPropertyChanged("EntriesData");
+            }
+        }
+
+        public ModelSong SelectedEntry
+        {
+            get { return selectedEntry; }
+            set
+            {
+                NotifyPropertyChanging("SelectedEntry");
+                selectedEntry = value;
+                NotifyPropertyChanged("SelectedEntry");
+            }
+        }
+
+        private static SpeechRecognizer getRecognizer()
+        {
+            SpeechRecognizer speechRecognizer = new SpeechRecognizer();
+            speechRecognizer.Grammars.AddGrammarFromPredefinedType("Words", SpeechPredefinedGrammar.WebSearch);
+            return speechRecognizer;
+        }
+
         public ObservableCollection<ModelSong> Entries
         {
             get { return entries; }
@@ -92,7 +124,6 @@ namespace KaraokeList.ViewModels
                 NotifyPropertyChanged("Entries");
             }
         }
-
 
         public ObservableCollection<AlphaKeyGroup<ModelSong>> EntriesGroup
         {
@@ -105,6 +136,16 @@ namespace KaraokeList.ViewModels
             }
         }
 
+        public SpeechRecognizer Recognizer
+        {
+            get { return recognizer; }
+            set
+            {
+                NotifyPropertyChanging("Recognizer");
+                recognizer = value;
+                NotifyPropertyChanged("Recognizer");
+            }
+        }
 
         #region INotifyPropertyChanged Members
 

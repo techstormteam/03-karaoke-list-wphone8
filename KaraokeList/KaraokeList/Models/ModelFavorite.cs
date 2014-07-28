@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 namespace KaraokeList.Models
 {
     [Table("ZFAVORITE")]
-    public class ModelFavorite : Model<ModelSong>
+    public class ModelFavorite
     {
         [PrimaryKey, Column("Z_PK"), AutoIncrement]
         public int Id { get; set; }
         [Column("Z_ENT")]
-        public string Ent { get; set; }
+        public int Ent { get; set; }
         [Column("Z_OPT")]
-        public string Opt { get; set; }
+        public int Opt { get; set; }
         [Column("ZROWID")]
-        public string SongId { get; set; }
+        public int SongId { get; set; }
         [Column("ZSVOL")]
-        public string Vol { get; set; }
+        public int Vol { get; set; }
         [Column("ZSABBR")]
         public string abbr { get; set; }
         [Column("ZSLANGUAGE")]
@@ -39,9 +39,11 @@ namespace KaraokeList.Models
         [Column("ZSNAMECLEAN")]
         public string NameClean { get; set; }
 
-        public static IEnumerable<ModelSong> QueryFavorite(SQLiteConnection db, int vol, string language)
+        public bool IsChecked { get; set; }
+
+        public static IEnumerable<ModelFavorite> QueryFavorite(SQLiteConnection db)
         {
-            return db.Query<ModelSong>("select * from ZSONG where ZSVOL = ?", vol);
+            return db.Query<ModelFavorite>("select * from ZFAVORITE");
         }
     }
 

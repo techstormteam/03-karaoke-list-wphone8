@@ -1,0 +1,87 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="KaraokeList.Views.PageSongDetail"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:toolkit="clr-namespace:Coding4Fun.Toolkit.Controls;assembly=Coding4Fun.Toolkit.Controls"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    shell:SystemTray.IsVisible="False"
+	shell:SystemTray.BackgroundColor="Black"
+    shell:SystemTray.ForegroundColor="#ffa200"
+    shell:SystemTray.Opacity="0.5">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="#1f1f1f">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"  Background="Black">
+            <Grid Height="40" Margin="30,10,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Assets/Images/app.icon.jpg" />
+                <TextBlock Grid.Column="1" TextBlock.Foreground="#ffa200" Margin="10,0,0,0" Text="KARAOKE LIST" FontSize="30" />
+            </Grid>
+        </Grid>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
+                <TextBlock Text="#" Style="{StaticResource PhoneTextTitle1Style}"/>
+                <TextBlock x:Name="lblSongId" Text="53090" Style="{StaticResource PhoneTextTitle1Style}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,0">
+                <TextBlock TextAlignment="Right" Style="{StaticResource PhoneTextSmallStyle}" HorizontalAlignment="Left" Width="150" Text="Tên bài hát:"/>
+                <TextBlock x:Name="lblSongName" Margin="13,0,0,0" Foreground="#ffa200" HorizontalAlignment="Left" Text="MÃI MÃI BÊN EM" Style="{StaticResource PhoneTextTitle3Style}"/>
+            </StackPanel>
+            <Grid Grid.Row="2" Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" TextAlignment="Right" Style="{StaticResource PhoneTextSmallStyle}" HorizontalAlignment="Left" Width="150" Text="Lời bài hát:"/>
+                <TextBlock Grid.Column="1" x:Name="lblLyric" Margin="13,0,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Nắng xuân rộn ràng đùa vui bên cánh hoa tươi..."/>
+            </Grid>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,20,0,0">
+                <TextBlock TextAlignment="Right" HorizontalAlignment="Left" Style="{StaticResource PhoneTextSmallStyle}" Width="150" Text="Sáng tác:"/>
+                <TextBlock x:Name="lblAuthor" Margin="13,0,0,0" HorizontalAlignment="Left" Text="Đức An"/>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,20,0,0">
+                <TextBlock TextAlignment="Right" HorizontalAlignment="Left" Style="{StaticResource PhoneTextSmallStyle}" Width="150" Text="Tìm nhanh:"/>
+                <TextBlock x:Name="lblQuickSearch" Margin="13,0,0,0" Foreground="Blue" HorizontalAlignment="Left" Text="mmbe"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True"
+                              ForegroundColor="#ffa200" BackgroundColor="Black">
+            <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationBar/appbar.favs.addto.rest.png" Text="yêu thích"
+                                            Click="btnAddToFav_Click"/>
+            <!--<shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="lịch sử tra từ" Click="btnSeeHistory_Click" />
+            </shell:ApplicationBar.MenuItems>-->
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+</phone:PhoneApplicationPage>

@@ -23,7 +23,8 @@ namespace KaraokeList
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
-        public static string DB_NAME = "KaraokeList.sqlite";
+        public static string DB_NAME = "KaraokeListb.sqlite";
+        public static string DB_INSTALL_PATH = "Database\\";
 
         /// <summary>
         /// The database path.
@@ -37,7 +38,7 @@ namespace KaraokeList
             {
                 if (dbConnection == null)
                 {
-                    dbConnection = new SQLiteConnection(DB_NAME);
+                    dbConnection = new SQLiteConnection(DB_PATH);
                 }
                 return dbConnection;
             }
@@ -53,6 +54,19 @@ namespace KaraokeList
                     viewModelSong = new ViewModelSong();
                 }
                 return viewModelSong;
+            }
+        }
+
+        private static ViewModelFavorite viewModelFavorite = null;
+        public static ViewModelFavorite ViewModelFavoriteProperty
+        {
+            get
+            {
+                if (viewModelFavorite == null)
+                {
+                    viewModelFavorite = new ViewModelFavorite();
+                }
+                return viewModelFavorite;
             }
         }
 
@@ -98,6 +112,7 @@ namespace KaraokeList
         private void loadViewModels()
         {
             App.ViewModelSongProperty.LoadData();
+            App.ViewModelFavoriteProperty.LoadData();
         }
 
         private void loadData()
@@ -126,7 +141,7 @@ namespace KaraokeList
                     IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication();
 
                     // Create a stream for the file in the installation folder.
-                    using (Stream input = Application.GetResourceStream(new Uri(DB_PATH, UriKind.Relative)).Stream)
+                    using (Stream input = Application.GetResourceStream(new Uri(DB_INSTALL_PATH + DB_NAME, UriKind.Relative)).Stream)
                     {
                         // Create a stream for the new file in the local folder.
                         using (IsolatedStorageFileStream output = iso.CreateFile(DB_PATH))

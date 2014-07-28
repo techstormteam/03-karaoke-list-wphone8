@@ -6,8 +6,9 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
+    xmlns:src="clr-namespace:KaraokeList"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -77,28 +78,26 @@
             </Grid>
         </Grid>
         <!--Pivot Control-->
-        <phone:Pivot Grid.Row="1">
+        <phone:Pivot Grid.Row="1" LoadingPivotItem="Pivot_LoadingPivotItem">
 
             <!--Pivot item one-->
-            <phone:PivotItem Header="Bài hát">
+            <phone:PivotItem x:Name="pviSongList" Header="Bài hát">
                 <Grid>
                     <phone:LongListSelector x:Name="llsWordList"
                                 GroupHeaderTemplate="{StaticResource WordSearchingGroupHeaderTemplate}"
                                 JumpListStyle="{StaticResource WorkSearchingJumpListStyle}"
                                 IsGroupingEnabled="true" HideEmptyGroups ="true" LayoutMode="List"
-                                ItemsSource="{Binding EntriesGroup}" Height="633" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
+                                ItemsSource="{Binding EntriesGroup}" Height="525" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <ScrollViewer x:Name="ImgScrollViewer" ScrollViewer.HorizontalScrollBarVisibility="Hidden"  VerticalScrollBarVisibility="Disabled" VerticalAlignment="Bottom">
-                                    <StackPanel Margin="0,-6,0,12" Opacity="1" Height="80">
-                                        <StackPanel>
-                                            <TextBlock x:Name="lblSongId" Text="{Binding SongId}" Padding="0,28,0,0" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle2Style}"/>
-                                            <TextBlock x:Name="lblSongName" Text="{Binding Name}" Padding="0,28,0,0" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextTitle2Style}"/>
-                                        </StackPanel>
-                                        <TextBlock x:Name="lblLyric" Text="{Binding Lyric}" Padding="0,28,0,0" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextTitle2Style}"/>
-                                        <!--<Rectangle Height="2" Fill="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
+                                <StackPanel Background="Black" Height="80">
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock x:Name="lblSongId" Text="{Binding SongId}" HorizontalAlignment="Left" Width="100" Style="{StaticResource PhoneTextTitle3Style}"/>
+                                        <TextBlock x:Name="lblSongName" Text="{Binding Name}" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle3Style}"/>
                                     </StackPanel>
-                                </ScrollViewer>
+                                    <TextBlock Grid.Row="1" x:Name="lblLyric" Text="{Binding Lyric}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSmallStyle}"/>
+                                    <Rectangle Height="5" Fill="#1f1f1f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </StackPanel>
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
@@ -106,24 +105,24 @@
             </phone:PivotItem>
 
             <!--Pivot item two-->
-            <phone:PivotItem Header="Yêu thích">
+            <phone:PivotItem x:Name="pviFavoriteList" Header="Yêu thích">
                 <Grid>
                     <phone:LongListSelector x:Name="llsSongFavoriteList"
-                                GroupHeaderTemplate="{StaticResource WordSearchingGroupHeaderTemplate}"
-                                JumpListStyle="{StaticResource WorkSearchingJumpListStyle}"
                                 IsGroupingEnabled="true" HideEmptyGroups ="true" LayoutMode="List"
-                                ItemsSource="{Binding EntriesGroup}" Height="525" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
+                                ItemsSource="{Binding EntriesGroup}" Height="525" VerticalAlignment="Top" SelectionChanged="llsSongFavoriteList_SelectionChanged">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <ScrollViewer x:Name="ImgScrollViewer" ScrollViewer.HorizontalScrollBarVisibility="Hidden"  VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal" Background="Black" Height="80">
+                                    <CheckBox  IsChecked="{Binding IsChecked}" Visibility="Collapsed" />
                                     <StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,-6,0,12" Opacity="1" Height="80" VerticalAlignment="Bottom">
-                                            <CheckBox  IsChecked="{Binding IsChecked}" Visibility="Collapsed" VerticalAlignment="Bottom"/>
-                                            <TextBlock x:Name="lblHeadword" Text="{Binding Word4Display}" Style="{StaticResource PhoneTextTitle2Style}" VerticalAlignment="Bottom"/>
+                                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                            <TextBlock x:Name="lblSongId" Text="{Binding SongId}" HorizontalAlignment="Left" Width="100" Style="{StaticResource PhoneTextTitle3Style}"/>
+                                            <TextBlock x:Name="lblSongName" Text="{Binding Name}" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle3Style}"/>
                                         </StackPanel>
-                                        <Rectangle Height="2" Fill="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                        <TextBlock Grid.Row="1" x:Name="lblLyric" Text="{Binding Lyric}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSmallStyle}"/>
+                                        <Rectangle Height="5" Fill="#1f1f1f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                     </StackPanel>
-                                </ScrollViewer>
+                                </StackPanel>
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
@@ -131,7 +130,7 @@
             </phone:PivotItem>
 
             <!--Pivot item three-->
-            <phone:PivotItem Header="Tác giả">
+            <phone:PivotItem x:Name="pviAbout"  Header="Tác giả">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -145,8 +144,14 @@
                     <TextBlock Grid.Row="2" TextBlock.Foreground="#ffa200" Text="Tác giả phần mềm: Trương Hoàng Ẩn" HorizontalAlignment="Left" Margin="57,22,0,0"/>
                     <TextBlock Grid.Row="3" TextBlock.Foreground="#ffa200" Text="Phiên bản: 1.0" HorizontalAlignment="Left" Margin="57,0,56,0" />
                     <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Margin="49,38,49,0">
-                        <toolkit:HubTile Title="đánh giá"  Message="" Source="/Assets/Images/app.author.rating.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0"  Background="#ffa200" GroupTag="StaticHubTile"/>
-                        <toolkit:HubTile Title="cập nhật" Message="" Source="/Assets/Images/app.author.download.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,0,0,0" Background="#ffa200" GroupTag="StaticHubTile"/>
+                        <Grid Width="150" Height="150" Background="#ffa200" VerticalAlignment="Top">
+                            <Image Source="/Assets/Images/app.author.rating.png" Width="100" Height="100"/>
+                            <TextBlock Text="đánh giá" Margin="0,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                        </Grid>
+                        <Grid Width="150" Height="150" Margin="30,0,0,0" Background="#ffa200" VerticalAlignment="Top">
+                            <Image Source="/Assets/Images/app.author.download.png" Width="100" Height="100"/>
+                            <TextBlock Text="cập nhật" Margin="0,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                        </Grid>
                     </StackPanel>
 
                 </Grid>
@@ -157,8 +162,7 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True"
                               ForegroundColor="#ffa200" BackgroundColor="Black">
-            <shell:ApplicationBarIconButton IconUri="Assets/ApplicationBar/appbar.search.png" Text="tìm kiếm"
-                                            Click="btnSearch_Click"/>
+
             <!--<shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="lịch sử tra từ" Click="btnSeeHistory_Click" />
             </shell:ApplicationBar.MenuItems>-->

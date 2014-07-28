@@ -21,7 +21,7 @@ namespace KaraokeList.Models
         [Column("ZSVOL")]
         public int Vol { get; set; }
         [Column("ZSABBR")]
-        public string abbr { get; set; }
+        public string Abbr { get; set; }
         [Column("ZSLANGUAGE")]
         public string Language { get; set; }
         [Column("ZSLYRIC")]
@@ -43,7 +43,7 @@ namespace KaraokeList.Models
 
         public static IEnumerable<ModelSong> QuerySongByVol(SQLiteConnection db, int vol, string language)
         {
-            return db.Query<ModelSong>("select * from ZSONG");
+            return db.Query<ModelSong>("select * from ZSONG where ZSVOL = ? and ZSLANGUAGE = ?", vol, language);
         }
     }
 
