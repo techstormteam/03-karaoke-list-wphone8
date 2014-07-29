@@ -24,6 +24,7 @@
     </shell:SystemTray.ProgressIndicator>
 
     <phone:PhoneApplicationPage.Resources>
+
         <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter" Enabled="#FFFFA200"/>
         <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
         <Style x:Key="WorkSearchingJumpListStyle" TargetType="phone:LongListSelector">
@@ -43,19 +44,48 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="JumpListStyle" TargetType="phone:LongListSelector">
+            <Setter Property="LayoutMode" Value="List" />
+            <Setter Property="Margin" Value="12,12,0,0"/>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background= 
+                                "{Binding Converter={StaticResource BackgroundConverter}}"  
+                                Width="470"  
+                                Height="70"  
+                                Margin="6">
+                            <TextBlock Text="{Binding Key}" 
+                                       Foreground= 
+                                       "{Binding Converter={StaticResource ForegroundConverter}}"                                        
+                                       FontFamily="{StaticResource PhoneFontFamilySemiBold}" 
+                                       FontSize="28"   
+                                       Padding="2" 
+                                       VerticalAlignment="Bottom"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <DataTemplate x:Key="WordSearchingGroupHeaderTemplate">
-            <Border Background="Transparent" Padding="5">
-                <Border Background="#ffa200" BorderBrush="#ffa200"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="Transparent" Padding="5">
+                    <Border Background="#ffa200" BorderBrush="#ffa200"
                         BorderThickness="2" Width="62" Height="62" Margin="0,0,18,0" HorizontalAlignment="Left">
-                    <TextBlock Text="{Binding Key}" FontSize="48" Padding="6"
+                        <TextBlock Text="{Binding Key}" FontSize="48" Padding="6"
                                FontFamily="{StaticResource PhoneFontFamilySemiLight}"
                                HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <TextBlock.Foreground>
-                            <SolidColorBrush Color="#FFFFFFFF"/>
-                        </TextBlock.Foreground>
-                    </TextBlock>
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FFFFFFFF"/>
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </Border>
                 </Border>
-            </Border>
+            </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
@@ -67,6 +97,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <Grid Grid.Row="0"  Background="Black">
             <Grid Height="40" Margin="30,10,0,10">
                 <Grid.ColumnDefinitions>
@@ -76,6 +107,10 @@
                 <Image Grid.Column="0" Source="Assets/Images/app.icon.jpg" />
                 <TextBlock Grid.Column="1" TextBlock.Foreground="#ffa200" Margin="10,0,0,0" Text="KARAOKE LIST" FontSize="30" />
             </Grid>
+        </Grid>
+        <Grid Grid.Row="0" x:Name="pnlProgressBar" Visibility="Collapsed" Background="#5cffffff">
+            <ProgressBar x:Name="progressBar" IsIndeterminate="True" VerticalAlignment="Top" Height="2"/>
+            <TextBlock x:Name="lblLoading" Text="Đang nạp. Vui lòng chờ ..." />
         </Grid>
         <!--Pivot Control-->
         <phone:Pivot Grid.Row="1" LoadingPivotItem="Pivot_LoadingPivotItem">
@@ -101,31 +136,84 @@
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
+
+                    <StackPanel  HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Top" Orientation="Horizontal">
+                        <toolkit:ListPicker Width="80" FullModeHeader="Chọn ngôn ngữ" Name="listPickerColor" SelectionChanged="listPickerLanguage_SelectionChanged">
+                        <toolkit:ListPicker.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Rectangle Fill="#ffa200" Margin="2, 2, 0 0" />
+                                        <TextBlock Text="{Binding Language}" HorizontalAlignment="Center" Margin="4 0 0 0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </toolkit:ListPicker.ItemTemplate>
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <Border Background="Transparent" Padding="5">
+                                    <Border Background="#ffa200" BorderBrush="#ffa200"
+                        BorderThickness="2" Height="62" Margin="0,0,18,0" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Path=Vol, StringFormat='VOL {0:00}'}" FontSize="48" Padding="6"
+                               FontFamily="{StaticResource PhoneFontFamilySemiLight}"
+                               HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="#FFFFFFFF"/>
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                    </Border>
+                                </Border>
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+
+                        <toolkit:ListPicker Width="120" FullModeHeader="Chọn VOL" Name="listPickerLanguage" SelectionChanged="listPickerColor_SelectionChanged">
+                        <toolkit:ListPicker.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Rectangle Fill="#ffa200" Margin="2, 2, 0 0" />
+                                        <TextBlock Text="{Binding Path=Vol, StringFormat='VOL {0:00}'}" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </toolkit:ListPicker.ItemTemplate>
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                        <Border Background="Transparent" Padding="5">
+                                            <Border Background="#ffa200" BorderBrush="#ffa200"
+                                BorderThickness="2" Height="62" Margin="0,0,18,0" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Path=Vol, StringFormat='VOL {0:00}'}" FontSize="48" Padding="6"
+                                       FontFamily="{StaticResource PhoneFontFamilySemiLight}"
+                                       HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <TextBlock.Foreground>
+                                                        <SolidColorBrush Color="#FFFFFFFF"/>
+                                                    </TextBlock.Foreground>
+                                                </TextBlock>
+                                            </Border>
+                                        </Border>
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+                    </StackPanel>
                 </Grid>
             </phone:PivotItem>
 
             <!--Pivot item two-->
             <phone:PivotItem x:Name="pviFavoriteList" Header="Yêu thích">
                 <Grid>
-                    <phone:LongListSelector x:Name="llsSongFavoriteList"
-                                IsGroupingEnabled="true" HideEmptyGroups ="true" LayoutMode="List"
-                                ItemsSource="{Binding EntriesGroup}" Height="525" VerticalAlignment="Top" SelectionChanged="llsSongFavoriteList_SelectionChanged">
-                        <phone:LongListSelector.ItemTemplate>
+                    <TextBlock x:Name="lblNotFound" Visibility="Collapsed" HorizontalAlignment="Center" Text="Không tìm thấy kết nào."/>
+                    <toolkit:LongListMultiSelector x:Name="llsSongFavoriteList" LayoutMode="List" 
+                                ItemsSource="{Binding Entries}" Height="525" VerticalAlignment="Top" SelectionChanged="llsSongFavoriteList_SelectionChanged">
+                        <toolkit:LongListMultiSelector.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Background="Black" Height="80">
-                                    <CheckBox  IsChecked="{Binding IsChecked}" Visibility="Collapsed" />
-                                    <StackPanel>
-                                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                            <TextBlock x:Name="lblSongId" Text="{Binding SongId}" HorizontalAlignment="Left" Width="100" Style="{StaticResource PhoneTextTitle3Style}"/>
-                                            <TextBlock x:Name="lblSongName" Text="{Binding Name}" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle3Style}"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Row="1" x:Name="lblLyric" Text="{Binding Lyric}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSmallStyle}"/>
-                                        <Rectangle Height="5" Fill="#1f1f1f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                <StackPanel Background="Black" Height="80">
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock x:Name="lblSongId" Text="{Binding SongId}" HorizontalAlignment="Left" Width="100" Style="{StaticResource PhoneTextTitle3Style}"/>
+                                        <TextBlock x:Name="lblSongName" Text="{Binding Name}" HorizontalAlignment="Left" Style="{StaticResource PhoneTextTitle3Style}"/>
                                     </StackPanel>
+                                    <TextBlock Grid.Row="1" x:Name="lblLyric" Text="{Binding Lyric}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSmallStyle}"/>
+                                    <Rectangle Height="5" Fill="#1f1f1f" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                 </StackPanel>
                             </DataTemplate>
-                        </phone:LongListSelector.ItemTemplate>
-                    </phone:LongListSelector>
+                        </toolkit:LongListMultiSelector.ItemTemplate>
+                    </toolkit:LongListMultiSelector>
                 </Grid>
             </phone:PivotItem>
 
@@ -144,11 +232,11 @@
                     <TextBlock Grid.Row="2" TextBlock.Foreground="#ffa200" Text="Tác giả phần mềm: Trương Hoàng Ẩn" HorizontalAlignment="Left" Margin="57,22,0,0"/>
                     <TextBlock Grid.Row="3" TextBlock.Foreground="#ffa200" Text="Phiên bản: 1.0" HorizontalAlignment="Left" Margin="57,0,56,0" />
                     <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Margin="49,38,49,0">
-                        <Grid Width="150" Height="150" Background="#ffa200" VerticalAlignment="Top">
+                        <Grid x:Name="btnRate" Width="150" Height="150" Background="#ffa200" VerticalAlignment="Top" Tap="btnRate_Tap">
                             <Image Source="/Assets/Images/app.author.rating.png" Width="100" Height="100"/>
                             <TextBlock Text="đánh giá" Margin="0,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
                         </Grid>
-                        <Grid Width="150" Height="150" Margin="30,0,0,0" Background="#ffa200" VerticalAlignment="Top">
+                        <Grid x:Name="btnUpdate" Width="150" Height="150" Margin="30,0,0,0" Background="#ffa200" VerticalAlignment="Top" Tap="btnUpdate_Tap">
                             <Image Source="/Assets/Images/app.author.download.png" Width="100" Height="100"/>
                             <TextBlock Text="cập nhật" Margin="0,0,0,10" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
                         </Grid>

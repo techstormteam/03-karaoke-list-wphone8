@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Windows.Phone.Speech.Recognition;
 using Windows.Phone.Speech.Synthesis;
 using KaraokeList;
+using KaraokeList.Models;
 
 namespace KaraokeList.Views
 {
@@ -46,17 +47,12 @@ namespace KaraokeList.Views
             if (String.IsNullOrEmpty(searchString))
             {
                 tbWordSearching.ActionIcon = seachImageSource;
-                //moveToItem(0);
                 return;
             }
             tbWordSearching.ActionIcon = clearImageSource;
 
-            //newHook = searchAPI.getHook(searchString);
-            //if (newHook != null)
-            //{
-            //    moveToItem(newHook.Data.fromPosition);
-            //}
-
+            //App.ViewModelSongProperty.searchSong(searchString);
+            //llsWordList.ItemsSource = App.ViewModelSongProperty.EntriesSearch;
         }
 
         private async void btnVoiceSearch_Tap(object sender, EventArgs e)
@@ -102,7 +98,7 @@ namespace KaraokeList.Views
 
                     // Set the fill color of the rectangle to the recognized color. 
                     tbWordSearching.Text = recoResult.Text.ToLower();
-
+                    search();
                 }
             }
             catch (System.Threading.Tasks.TaskCanceledException)
@@ -139,7 +135,24 @@ namespace KaraokeList.Views
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            
+            search();
+        }
+
+        private void search()
+        {
+            pnlProgressBar.Visibility = Visibility.Visible;
+            string searchString = tbWordSearching.Text;
+            App.ViewModelSongProperty.searchSong(searchString);
+            if (App.ViewModelSongProperty.EntriesSearch.Count > 0)
+            {
+                lblNotFound.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                lblNotFound.Visibility = Visibility.Visible;
+            }
+            llsWordList.ItemsSource = App.ViewModelSongProperty.EntriesSearch;
+            pnlProgressBar.Visibility = Visibility.Collapsed;
         }
 
         private async void btnVoiceSearch_Click(object sender, EventArgs e)
@@ -216,10 +229,15 @@ namespace KaraokeList.Views
             {
                 return;
             }
-            //App.EntryViewModelProperty.SelectedEntry = (DictionaryEntry)llsWordList.SelectedItem;
-            //gotoMeanings();
+            App.ViewModelSongProperty.SelectedEntry = (ModelSong)llsWordList.SelectedItem;
+            gotoPage("/Views/PageSongDetail.xaml");
 
             llsWordList.SelectedItem = null;
+        }
+
+        private void gotoPage(string pageName)
+        {
+            this.NavigationService.Navigate(new Uri("/" + pageName, UriKind.RelativeOrAbsolute));
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

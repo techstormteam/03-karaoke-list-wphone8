@@ -9,12 +9,13 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using KaraokeList.Models;
 using Coding4Fun.Toolkit.Controls;
+using System.Windows.Media;
 
 namespace KaraokeList.Views
 {
     public partial class PageSongDetail : PhoneApplicationPage
     {
-        ToastPrompt toast = new ToastPrompt();
+        ToastPrompt toast;
 
         public PageSongDetail()
         {
@@ -23,6 +24,8 @@ namespace KaraokeList.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            toast = createToastPrompt();
+
             ModelSong song = App.ViewModelSongProperty.SelectedEntry;
             lblSongId.Text = song.SongId.ToString();
             lblSongName.Text = song.Name;
@@ -41,7 +44,7 @@ namespace KaraokeList.Views
             else
             {
                 App.ViewModelFavoriteProperty.addFavoriteSong(song);
-                toast.Message = "Bài hát \"" + song.Name + "\" đã được thêm vào danh sách yêu thích";
+                toast.Message = "Bài hát \"" + song.Name + "\" đã được thêm yêu thích";
             }
             toast.Show();
         }
@@ -50,8 +53,9 @@ namespace KaraokeList.Views
         {
             ToastPrompt toast = new ToastPrompt();
             toast.TextWrapping = TextWrapping.Wrap;
-            toast.IsTimerEnabled = true;
-            toast.Stretch = System.Windows.Media.Stretch.UniformToFill;
+            //toast.IsTimerEnabled = true;
+            //toast.Stretch = System.Windows.Media.Stretch.UniformToFill;
+            toast.Background = new SolidColorBrush(Colors.Orange);
             //toast.Completed += toast_Completed;
             return toast;
         }

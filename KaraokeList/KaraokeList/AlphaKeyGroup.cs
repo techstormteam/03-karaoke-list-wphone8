@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KaraokeList
 {
-    public class AlphaKeyGroup<T> : List<T>
+    public class AlphaKeyGroup<T> : ObservableCollection<T>
     {
         /// <summary>
         /// The delegate that is used to get the key information.
@@ -22,6 +22,8 @@ namespace KaraokeList
         /// The Key of this group.
         /// </summary>
         public string Key { get; private set; }
+
+        public static int Vol { get; private set; }
 
         /// <summary>
         /// Public constructor.
@@ -87,6 +89,7 @@ namespace KaraokeList
         /// <returns>An items source for a LongListSelector</returns>
         public static ObservableCollection<AlphaKeyGroup<T>> CreateGroups(IEnumerable<T> items, CultureInfo ci, GetKeyDelegate getKey, bool sort)
         {
+            
             SortedLocaleGrouping slg = new SortedLocaleGrouping(ci);
             ObservableCollection<AlphaKeyGroup<T>> list = CreateGroups(slg);
 
@@ -96,12 +99,17 @@ namespace KaraokeList
             {
                 foreach (AlphaKeyGroup<T> group in list)
                 {
-                    group.Sort((c0, c1) => { return ci.CompareInfo.Compare(getKey(c0), getKey(c1)); });
+                    group.ToList<T>().Sort((c0, c1) => { return ci.CompareInfo.Compare(getKey(c0), getKey(c1)); });
                 }
             }
 
             return list;
         }
 
+        public static ObservableCollection<AlphaKeyGroup<T>> Create2Groups(IEnumerable<T> items, CultureInfo ci, GetKeyDelegate getKey, bool sort, int vol)
+        {
+            Vol = vol;
+            return CreateGroups(items, ci, getKey, sort);
+        }
     }
 }

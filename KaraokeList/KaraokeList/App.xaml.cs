@@ -23,7 +23,7 @@ namespace KaraokeList
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
-        public static string DB_NAME = "KaraokeListb.sqlite";
+        public static string DB_NAME = "KaraokeListDB.sqlite";
         public static string DB_INSTALL_PATH = "Database\\";
 
         /// <summary>

@@ -36,7 +36,12 @@
                 <TextBlock Grid.Column="1" TextBlock.Foreground="#ffa200" Margin="10,0,0,0" Text="KARAOKE LIST" FontSize="30" />
             </Grid>
         </Grid>
-        
+
+        <Grid Grid.Row="0" x:Name="pnlProgressBar" Visibility="Collapsed" Background="#5cffffff">
+            <ProgressBar x:Name="progressBar" IsIndeterminate="True" VerticalAlignment="Top" Height="2"/>
+            <TextBlock x:Name="lblLoading" Text="Đang nạp. Vui lòng chờ ..." />
+        </Grid>
+
         <!--TitlePanel contains the name of the application and page title-->
         <Grid Grid.Row="1" Background="#1f1f1f">
             <Grid.RowDefinitions>
@@ -59,9 +64,9 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="2" Background="#1f1f1f">
-
+            <TextBlock x:Name="lblNotFound" Visibility="Collapsed" HorizontalAlignment="Center" Text="Không tìm thấy kết nào."/>
             <phone:LongListSelector x:Name="llsWordList" HideEmptyGroups ="true" LayoutMode="List"
-                                ItemsSource="{Binding EntriesData}" Height="633" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
+                                ItemsSource="{Binding EntriesSearch}" Height="633" VerticalAlignment="Top" SelectionChanged="llsWordList_SelectionChanged">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         

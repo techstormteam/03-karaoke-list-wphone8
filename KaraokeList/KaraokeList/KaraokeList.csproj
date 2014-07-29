@@ -110,6 +110,11 @@
     <Compile Include="Speech.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="Utility\ScheduledTaskHelper.cs" />
+    <Compile Include="Utility\SystemHelper.cs" />
+    <Compile Include="Utility\TileHelper.cs" />
+    <Compile Include="Utility\VersionUpdateHelper.cs" />
+    <Compile Include="Utility\YoutubeHelper.cs" />
     <Compile Include="ViewModels\ViewModelFavorite.cs" />
     <Compile Include="ViewModels\ViewModelSong.cs" />
     <Compile Include="Views\PageSongDetail.xaml.cs">
@@ -195,6 +200,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README_FIRST.txt" />
+    <Content Include="SplashScreenImage..jpg" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />

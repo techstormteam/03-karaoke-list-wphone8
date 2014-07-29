@@ -13,14 +13,16 @@ using Microsoft.Phone.Tasks;
 using KaraokeList.Models;
 using SQLite;
 using System.Windows.Media;
+using System.Reflection;
+using System.Collections.ObjectModel;
+using Utility;
 
 namespace KaraokeList
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private List<ModelFavorite> chosenEntries = new List<ModelFavorite>();
-        private bool selectMode = false;
         private ApplicationBarIconButton btnSearch;
+        private ApplicationBarIconButton btnVol;
         private ApplicationBarIconButton btnSelect;
         private ApplicationBarIconButton btnDelete;
 
@@ -36,45 +38,17 @@ namespace KaraokeList
 
         private void updateList()
         {
-            App.ViewModelFavoriteProperty.CreateGroup();
-            llsWordList.ItemsSource = App.ViewModelFavoriteProperty.EntriesGroup;
+            //App.ViewModelFavoriteProperty.LoadData();
         }
 
         private void llsSongFavoriteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (llsSongFavoriteList.SelectedItem == null)
-            {
-                return;
-            }
-            ModelFavorite entry = (ModelFavorite)llsSongFavoriteList.SelectedItem;
-
-            if (selectMode)
-            {
-                entry.IsChecked = !entry.IsChecked;
-                updatePageAfterCheckOrUncheck();
-            }
-            else
-            {
-                App.ViewModelFavoriteProperty.SelectedEntry = entry;
-                //gotoMeanings("FavouritesMeaningPage.xaml");
-            }
-
-            llsSongFavoriteList.SelectedItem = null;
+            showEnabledDeleteButton();
         }
 
-        private void updatePageAfterCheckOrUncheck()
+        private void showEnabledDeleteButton()
         {
-            ModelFavorite entry = (ModelFavorite)llsWordList.SelectedItem;
-            if (entry.IsChecked)
-            {
-                chosenEntries.Add(entry);
-            }
-            else
-            {
-                chosenEntries.Remove(entry);
-            }
-
-            if (chosenEntries.Count > 0)
+            if (llsSongFavoriteList.SelectedItems.Count > 0)
             {
                 btnDelete.IsEnabled = true;
             }
@@ -92,6 +66,11 @@ namespace KaraokeList
             btnSearch.IconUri = new Uri("/Assets/ApplicationBar/appbar.search.png", UriKind.Relative);
             btnSearch.Text = "tìm kiếm";
             btnSearch.Click += new EventHandler(btnSearch_Click);
+
+            btnVol = new ApplicationBarIconButton();
+            btnVol.IconUri = new Uri("/Assets/ApplicationBar/appbar.learning.png", UriKind.Relative);
+            btnVol.Text = "chọn Vol";
+            btnVol.Click += new EventHandler(btnVol_Click);
 
             btnSelect = new ApplicationBarIconButton();
             btnSelect.IconUri = new Uri("/Assets/ApplicationBar/appbar.select.png", UriKind.Relative);
@@ -126,6 +105,7 @@ namespace KaraokeList
         {
             ApplicationBar.Buttons.Clear();
             ApplicationBar.Buttons.Add(btnSearch);
+            //ApplicationBar.Buttons.Add(btnVol);
             //ApplicationBar.Buttons.Remove(btnSelect);
             //ApplicationBar.Buttons.Remove(btnDelete);
         }
@@ -154,17 +134,25 @@ namespace KaraokeList
             gotoPage("/Views/PageSongSearch.xaml");
         }
 
+        private void btnVol_Click(object sender, EventArgs e)
+        {
+            //popVolChooser.IsOpen = true;
+        }
+
         private void btnSelect_Click(object sender, EventArgs e)
         {
-            selectMode = true;
-            btnDelete.IsEnabled = false;
-            btnSelect.IsEnabled = true;
-            showAllCheckBoxes();
+            llsSongFavoriteList.EnforceIsSelectionEnabled = !llsSongFavoriteList.EnforceIsSelectionEnabled;
+ 
         }
 
         private void showAllCheckBoxes()
         {
             setVisibilityAllCheckBoxes(llsSongFavoriteList, Visibility.Visible);
+        }
+
+        private void hideAllCheckBoxes()
+        {
+            setVisibilityAllCheckBoxes(llsSongFavoriteList, Visibility.Collapsed);
         }
 
         private void setVisibilityAllCheckBoxes(DependencyObject targeted_control, Visibility visibility)
@@ -178,6 +166,7 @@ namespace KaraokeList
                     if (child is CheckBox) // Only search for ChecBoxes
                     {
                         CheckBox checkBox = (CheckBox)child;
+                        checkBox.IsChecked = false;
                         checkBox.Visibility = visibility;
                     }
                     else
@@ -195,34 +184,38 @@ namespace KaraokeList
         private void deleteAllEntries()
         {
             string caption = "Bạn có chắc không?";
-            string message = "Sau thao tác này, toàn bộ lịch sử tra từ của bạn sẽ bị xóa hết.";
+            string message = "Sau thao tác này, toàn bộ dữ liệu của bạn sẽ bị xóa hết.";
             MessageBoxResult result = MessageBox.Show(message, caption,
             MessageBoxButton.OKCancel);
             if (MessageBoxResult.OK == result)
             {
-                App.ViewModelFavoriteProperty.Entries.Clear();
+                deleteEntries(new List<ModelFavorite>(App.ViewModelFavoriteProperty.Entries.ToList<ModelFavorite>()));
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (chosenEntries.Count == 0)
+            if (llsSongFavoriteList.SelectedItems.Count == 0)
             {
                 deleteAllEntries();
             }
             else
             {
-                deleteEntries(chosenEntries);
-                OnBackKeyPress(new System.ComponentModel.CancelEventArgs());
+                List<ModelFavorite> list = new List<ModelFavorite>();
+                foreach (ModelFavorite item in llsSongFavoriteList.SelectedItems)
+                {
+                    list.Add(item);
+                }
+                deleteEntries(list);
             }
-            chosenEntries.Clear();
-            updateList();
+            checkShowNotFound();
         }
 
         private void deleteEntries(List<ModelFavorite> chosenEntries)
         {
             foreach (ModelFavorite entry in chosenEntries)
             {
+                App.ViewModelFavoriteProperty.deleteFavorite(entry);
                 App.ViewModelFavoriteProperty.Entries.Remove(entry);
             }
         }
@@ -231,6 +224,8 @@ namespace KaraokeList
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            
 
             var askforReview = (bool)IsolatedStorageSettings.ApplicationSettings["askforreview"];
             if (askforReview)
@@ -246,15 +241,11 @@ namespace KaraokeList
             }
         }
 
+        
+
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            //if (_recoEnabled)
-            //{
-            //    stopVoiceRecognition();
-            //    e.Cancel = true;
-            //    base.OnBackKeyPress(e);
-            //    return;
-            //}
+   
 
             string caption = "Thoát";
             string message = "Bạn muốn thoát khỏi KaraokeList?";
@@ -268,8 +259,14 @@ namespace KaraokeList
         private void PageMain_Loaded(object sender, RoutedEventArgs e)
         {
             // Set the data context of the listbox control to the sample data
+            llsWordList.ItemsSource = null;
             llsWordList.ItemsSource = App.ViewModelSongProperty.EntriesGroup;
             llsSongFavoriteList.ItemsSource = App.ViewModelFavoriteProperty.Entries;
+            
+            ObservableCollection<ModelSong> vols = App.ViewModelSongProperty.EntriesVol;
+            listPickerLanguage.ItemsSource = vols;
+            ObservableCollection<ModelSong> languages = App.ViewModelSongProperty.EntriesLanguage;
+            listPickerColor.ItemsSource = languages;
         }
 
         private void pviFavoriteList_GotFocus(object sender, RoutedEventArgs e)
@@ -286,6 +283,9 @@ namespace KaraokeList
         {
             if (pviFavoriteList == e.Item)
             {
+                App.ViewModelFavoriteProperty.LoadData();
+                showEnabledDeleteButton();
+                checkShowNotFound();
                 showAppBarFavoriteList();
             }
             else if (pviSongList == e.Item)
@@ -298,5 +298,69 @@ namespace KaraokeList
             }
             
         }
+
+        private void checkShowNotFound()
+        {
+            if (App.ViewModelFavoriteProperty.Entries == null ||
+                App.ViewModelFavoriteProperty.Entries.Count == 0)
+            {
+                lblNotFound.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                lblNotFound.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void listPickerColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            pnlProgressBar.Visibility = Visibility.Visible;
+            ModelSong item = (sender as ListPicker).SelectedItem as ModelSong;
+            if (item != null)
+            {
+                if (App.ViewModelSongProperty.Vol != item.Vol)
+                {
+                    App.ViewModelSongProperty.Vol = item.Vol;
+                    llsSongFavoriteList.ItemsSource = null;
+                    llsSongFavoriteList.ItemsSource = App.ViewModelSongProperty.reloadSongList();
+                }
+            }
+            pnlProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void listPickerLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            pnlProgressBar.Visibility = Visibility.Visible;
+            ModelSong item = (sender as ListPicker).SelectedItem as ModelSong;
+            if (item != null)
+            {
+                if (App.ViewModelSongProperty.Language != item.Language)
+                {
+                    
+                    App.ViewModelSongProperty.Language = item.Language;
+                    App.ViewModelSongProperty.reloadSongList();
+                    llsWordList.ItemsSource = null;
+                    llsWordList.ItemsSource = App.ViewModelSongProperty.EntriesGroup;
+                }
+            }
+            pnlProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnRate_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var marketplaceReviewTask = new MarketplaceReviewTask();
+            marketplaceReviewTask.Show();
+        }
+
+        private void btnUpdate_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+            marketplaceDetailTask.ContentIdentifier = SystemHelper.GetAppID();
+            marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+            marketplaceDetailTask.Show();
+        }
+
+
+
     }
 }

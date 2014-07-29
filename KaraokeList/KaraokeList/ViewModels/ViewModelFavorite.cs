@@ -37,7 +37,11 @@ namespace KaraokeList.ViewModels
         public void LoadData()
         {
             IEnumerable<ModelFavorite> list = ModelFavorite.QueryFavorite(App.DbConnectionProperty);
-            entries = new ObservableCollection<ModelFavorite>(list);
+            entries.Clear();
+            foreach (ModelFavorite item in list)
+            {
+                entries.Add(item);
+            }
         }
 
         private ObservableCollection<AlphaKeyGroup<ModelFavorite>> createGroup()
@@ -45,6 +49,19 @@ namespace KaraokeList.ViewModels
             return AlphaKeyGroup<ModelFavorite>.CreateGroups(entries,
                 System.Threading.Thread.CurrentThread.CurrentUICulture,
                 (ModelFavorite s) => { return s.Name; }, true);
+        }
+
+        public void deleteFavorite(ModelFavorite fav)
+        {
+            ModelFavorite.Delete(App.DbConnectionProperty, fav);
+            foreach (ModelSong item in App.ViewModelSongProperty.Entries)
+            {
+                if (item.SongId == fav.SongId)
+                {
+                    item.Favourite = 0;
+                }
+            }
+            ModelSong.RemoveFavorite(App.DbConnectionProperty, fav.SongId);
         }
 
         public void addFavoriteSong(ModelSong song)
@@ -61,6 +78,7 @@ namespace KaraokeList.ViewModels
             fav.Opt = song.Opt;
             fav.SongId = song.SongId;
             fav.Vol = song.Vol;
+            fav.SID = song.Id;
 
             App.DbConnectionProperty.Insert(fav);
             song.Favourite = 1;

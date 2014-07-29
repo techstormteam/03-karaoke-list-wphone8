@@ -43,7 +43,28 @@ namespace KaraokeList.Models
 
         public static IEnumerable<ModelSong> QuerySongByVol(SQLiteConnection db, int vol, string language)
         {
-            return db.Query<ModelSong>("select * from ZSONG where ZSVOL = ? and ZSLANGUAGE = ?", vol, language);
+            return db.Query<ModelSong>("select * from ZSONG where ZSVOL <= ? and ZSLANGUAGE = ?", vol, language);
+        }
+
+        public static IEnumerable<ModelSong> QuerySongByCri(SQLiteConnection db, int vol, string language , string search)
+        {
+            return db.Query<ModelSong>("select * from ZSONG where ZSVOL <= ? and ZSLANGUAGE = ? and (ZSABBR like ? or ZSLYRIC like ? or ZSLYRICCLEAN like ? or ZSMETA like ? or ZSMETACLEAN like ? or ZSNAME like ? or ZSNAMECLEAN like ?)", vol, language, search, search, search, search, search, search, search);
+            //return db.Query<ModelSong>("select * from ZSONG where ZSVOL <= ? and ZSLANGUAGE = ?", vol, language);
+        }
+
+        public static IEnumerable<ModelSong> QueryVol(SQLiteConnection db)
+        {
+            return db.Query<ModelSong>("select ZSVOL from ZSONG group by ZSVOL order by ZSVOL desc");
+        }
+
+        public static IEnumerable<ModelSong> QueryLanguage(SQLiteConnection db)
+        {
+            return db.Query<ModelSong>("select ZSLANGUAGE from ZSONG group by ZSLANGUAGE order by ZSLANGUAGE desc");
+        }
+
+        public static IEnumerable<ModelSong> RemoveFavorite(SQLiteConnection db, int songId)
+        {
+            return db.Query<ModelSong>("update ZSONG set favourite = 0 where ZROWID = ?", songId);
         }
     }
 

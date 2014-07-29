@@ -19,6 +19,11 @@ namespace KaraokeList.ViewModels
     public class ViewModelSong : INotifyPropertyChanged, INotifyPropertyChanging
     {
         private int nextIndex = 0;
+        public int Vol { get; set; }
+        public string Language { get; set; }
+        private ObservableCollection<ModelSong> entriesVol;
+        private ObservableCollection<ModelSong> entriesLanguage;
+        private ObservableCollection<ModelSong> entriesSearch;
         private ObservableCollection<ModelSong> entries;
         private ObservableCollection<AlphaKeyGroup<ModelSong>> entriesGroup;
         private ModelSong selectedEntry;
@@ -26,43 +31,69 @@ namespace KaraokeList.ViewModels
 
         private bool dataLoaded = false;
 
+        public bool NeedApplyChanges { get; set; }
+
         public ViewModelSong()
         {
+            NeedApplyChanges = true;
         }
 
         public void LoadData()
         {
+            
             if (!dataLoaded)
             {
-                IEnumerable<ModelSong> list = ModelSong.QuerySongByVol(App.DbConnectionProperty, 48, "vn");
-                entries = new ObservableCollection<ModelSong>(list);
+                IEnumerable<ModelSong> list = ModelSong.QueryVol(App.DbConnectionProperty);
+                entriesVol = new ObservableCollection<ModelSong>(list);
+                entriesVol.RemoveAt(entriesVol.Count - 1);
+                if (entriesVol != null && entriesVol.Count > 0) {
+                    Vol = entriesVol.First<ModelSong>().Vol;
+                }
 
-                //ModelSong song;
-                //entries = new ObservableCollection<ModelSong>();
-                //song = new ModelSong();
-                //song.SongId = 111111;
-                //song.Name = "Tinh ta lo xa";
-                //song.Lyric = "dpsgoisdnoibnrpojbiwehiobwepb[pwepobhweiohbw";
-                //entries.Add(song);
+                list = ModelSong.QueryLanguage(App.DbConnectionProperty);
+                entriesLanguage = new ObservableCollection<ModelSong>(list);
+                //entriesLanguage.RemoveAt(entriesLanguage.Count - 1);
+                if (entriesLanguage != null && entriesLanguage.Count > 0)
+                {
+                    Language = entriesLanguage.First<ModelSong>().Language;
+                }
 
-                //song = new ModelSong();
-                //song.SongId = 222222;
-                //song.Name = "Tinh ta lo xa";
-                //song.Lyric = "dpsgoisdnoibnrpojbiwehiobwepb[pwepobhweiohbw";
-                //entries.Add(song);
+                
+                
 
-                EntriesGroup = CreateGroup(0, entries.Count - 1);
+                dataLoaded = true;
             }
 
+            if (NeedApplyChanges)
+            {
+                reloadSongList();
+                NeedApplyChanges = false;
+            }
 
+        }
+
+        public ObservableCollection<AlphaKeyGroup<ModelSong>> reloadSongList()
+        {
+            IEnumerable<ModelSong> list = ModelSong.QuerySongByVol(App.DbConnectionProperty, Vol, Language);
+            entries = new ObservableCollection<ModelSong>(list);
+            EntriesGroup = CreateGroup(0, entries.Count - 1);
+            EntriesSearch = new ObservableCollection<ModelSong>(list);
+            return EntriesGroup;
+        }
+
+        public void searchSong(string keys)
+        {
+            IEnumerable<ModelSong> list = ModelSong.QuerySongByCri(App.DbConnectionProperty, Vol, Language, keys);
+            
+            EntriesSearch = new ObservableCollection<ModelSong>(list);
         }
 
         public ObservableCollection<AlphaKeyGroup<ModelSong>> CreateGroup(int fromPosition, int toPosition)
         {
             List<ModelSong> lookedEntries = entries.ToList().GetRange(fromPosition, toPosition - fromPosition + 1);
-            return AlphaKeyGroup<ModelSong>.CreateGroups(lookedEntries,
+            return AlphaKeyGroup<ModelSong>.Create2Groups(lookedEntries,
                 System.Threading.Thread.CurrentThread.CurrentUICulture,
-                (ModelSong s) => { return s.Name; }, false);
+                (ModelSong s) => { return s.Name; }, false, Vol);
         }
 
         public void addMoreEntries(int entryNumber)
@@ -93,6 +124,39 @@ namespace KaraokeList.ViewModels
                 NotifyPropertyChanging("EntriesData");
                 entries = value;
                 NotifyPropertyChanged("EntriesData");
+            }
+        }
+
+        public ObservableCollection<ModelSong> EntriesVol
+        {
+            get { return entriesVol; }
+            set
+            {
+                NotifyPropertyChanging("EntriesVol");
+                entriesVol = value;
+                NotifyPropertyChanged("EntriesVol");
+            }
+        }
+
+        public ObservableCollection<ModelSong> EntriesLanguage
+        {
+            get { return entriesLanguage; }
+            set
+            {
+                NotifyPropertyChanging("EntriesLanguage");
+                entriesLanguage = value;
+                NotifyPropertyChanged("EntriesLanguage");
+            }
+        }
+
+        public ObservableCollection<ModelSong> EntriesSearch
+        {
+            get { return entriesSearch; }
+            set
+            {
+                NotifyPropertyChanging("EntriesSearch");
+                entriesSearch = value;
+                NotifyPropertyChanged("EntriesSearch");
             }
         }
 

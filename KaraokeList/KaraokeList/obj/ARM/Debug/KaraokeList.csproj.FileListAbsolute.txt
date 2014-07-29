@@ -176,6 +176,6 @@ E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList
 E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\obj\ARM\Debug\vi-VN\KaraokeList.resources.dll
 E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\obj\ARM\Debug\vi\KaraokeList.resources.dll
 E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\obj\ARM\Debug\XapCacheFile.xml
-E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\Bin\ARM\Debug\Database\KaraokeListDB.sqlite
 E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\obj\ARM\Debug\Views\PageSongDetail.g.cs
 E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\Bin\ARM\Debug\Coding4Fun.Toolkit.Controls.dll
+E:\Programming\sourcecode\vs2012\03-karaoke-list-wphone8\KaraokeList\KaraokeList\Bin\ARM\Debug\Database\KaraokeListDB.sqlite
